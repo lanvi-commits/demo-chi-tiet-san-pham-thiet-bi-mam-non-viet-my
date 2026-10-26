@@ -189,15 +189,19 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
 /* ---------- Bố cục PDP ---------- */
 /* Lưới 3 cột. Cột trái (ảnh, cam kết, tab) trải phẳng vào lưới để thanh tab có vùng riêng
    kéo từ hàng 3 tới hết Đánh giá → dính đầu màn hình suốt 4 mục nó trỏ tới. Hàng 3 = 1fr để
-   phần cột giữa/phải dài hơn dồn hết vào đó, không đẩy hở khoảng giữa ảnh và Cam kết. */
-.pdp { display: grid; grid-template-columns: 450px minmax(0, 1fr) 280px; grid-template-rows: auto auto 1fr; column-gap: 24px; align-items: start; }
+   phần cột giữa/phải dài hơn dồn hết vào đó, không đẩy hở khoảng giữa ảnh và Cam kết.
+   CHANGE v8 — khối tên + điểm + giá (.summary-head) đứng TRƯỚC ảnh trong DOM để mobile đọc
+   tên trước ảnh mà không phải đảo bằng CSS order. Desktop/tablet thêm 1 hàng đầu cho nó
+   (cột giữa), mọi hàng phía sau dời +1, ảnh kéo 2 hàng → nhìn y như v7. */
+.pdp { display: grid; grid-template-columns: 450px minmax(0, 1fr) 280px; grid-template-rows: auto auto auto 1fr; column-gap: 24px; align-items: start; }
 .pdp-left { display: contents; }
-.gallery { grid-column: 1; grid-row: 1; } .commit { grid-column: 1; grid-row: 2; }
-.ptabs { grid-column: 1; grid-row: 3 / 8; justify-self: start; position: sticky; top: 16px; z-index: 15; }
-.summary { grid-column: 2; grid-row: 1 / 4; }
-.pdp-right { grid-column: 3; grid-row: 1 / 4; display: flex; flex-direction: column; gap: 16px; }
+.summary-head { grid-column: 2; grid-row: 1; }
+.gallery { grid-column: 1; grid-row: 1 / 3; } .commit { grid-column: 1; grid-row: 3; }
+.ptabs { grid-column: 1; grid-row: 4 / 9; justify-self: start; position: sticky; top: 16px; z-index: 15; }
+.summary { grid-column: 2; grid-row: 2 / 5; }
+.pdp-right { grid-column: 3; grid-row: 1 / 5; display: flex; flex-direction: column; gap: 16px; }
 .pdp > section { grid-column: 1 / -1; }
-.specs { grid-row: 4; } .desc { grid-row: 5; } .faq { grid-row: 6; } .reviews { grid-row: 7; }
+.specs { grid-row: 5; } .desc { grid-row: 6; } .faq { grid-row: 7; } .reviews { grid-row: 8; }
 .team { display: none; }
 [id] { scroll-margin-top: 24px; }
 
@@ -610,9 +614,9 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
 }
 @media (max-width: 1199px) {
   .pdp { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
-  .pdp-right { grid-column: 1 / -1; grid-row: 4; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; align-items: start; }
-  .ptabs { grid-row: 3 / 9; }
-  .specs { grid-row: 5; } .desc { grid-row: 6; } .faq { grid-row: 7; } .reviews { grid-row: 8; }
+  .pdp-right { grid-column: 1 / -1; grid-row: 5; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; align-items: start; }
+  .ptabs { grid-row: 4 / 10; }
+  .specs { grid-row: 6; } .desc { grid-row: 7; } .faq { grid-row: 8; } .reviews { grid-row: 9; }
   .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .cards .card:nth-child(5) { display: none; }
   .ptabs a { padding: 0 12px; }
@@ -653,7 +657,8 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
 
   .pdp { display: flex; flex-direction: column; align-items: stretch; }
   .pdp-left, .pdp-right { display: contents; }
-  .gallery { order: 1; margin-top: 12px; } .summary { order: 2; margin-top: 16px; }
+  /* CHANGE v8 — tên + điểm + giá lên trên ảnh: cùng order 1 với ảnh, đứng trước nhờ thứ tự DOM */
+  .summary-head { order: 1; margin-top: 12px; } .gallery { order: 1; margin-top: 0; } .summary { order: 2; margin-top: 16px; }
   .specs { order: 3; } .commit { order: 4; margin-top: 24px; } #chinh-sach { order: 5; margin-top: 16px; }
   .team { order: 6; display: block; } .desc { order: 7; } .faq { order: 8; } .reviews { order: 9; }
   .ptabs, .side-consult { display: none; }
@@ -1026,8 +1031,9 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
   <!-- Tab mục — chỉ mobile, dính đầu trang -->
   <nav class="mtabs" aria-label="Mục trên trang">
     <ul>
-      <li><a href="#hinh-anh" class="is-active">Hình ảnh</a></li>
-      <li><a href="#gia">Giá &amp; Khuyến mãi</a></li>
+      <!-- CHANGE v8 — tab theo đúng thứ tự trên trang: tên + giá đứng trước ảnh -->
+      <li><a href="#gia" class="is-active">Giá &amp; Khuyến mãi</a></li>
+      <li><a href="#hinh-anh">Hình ảnh</a></li>
       <li><a href="#thong-so">Thông số</a></li>
       <li><a href="#chinh-sach">Chính sách</a></li>
       <li><a href="#mo-ta">Mô tả</a></li>
@@ -1038,7 +1044,26 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
 
   <div class="container">
     <article class="pdp">
-      <!-- ====== CỘT TRÁI: ảnh + cam kết + tab ====== -->
+      <!-- ====== CỘT GIỮA (đầu): tên, điểm, giá — CHANGE v8: đứng trước ảnh trong DOM, mobile hiện trên ảnh ====== -->
+      <div class="summary-head" id="gia">
+        <h1 class="p-title">Vòng xoay vận động mầm non VM-6311</h1>
+        <div class="p-meta">
+          <span class="p-rating"><span class="stars" style="--p:92%" role="img" aria-label="4,6 trên 5 sao"></span><b>4.6</b><span class="muted">(32)</span></span>
+          <span class="vbar" aria-hidden="true"></span>
+          <span class="muted">Đã bán 1.2k</span>
+          <span class="stock">Còn hàng</span>
+        </div>
+        <div class="p-price">
+          <div class="price-row">
+            <span class="price-now" data-price-now>4.200.000đ</span>
+            <s class="price-old" data-price-old><span class="sr-only">Giá gốc </span>4.550.000đ</s>
+            <span class="disc" data-disc>-8%</span>
+          </div>
+          <p class="save" data-save><svg class="ico ico-16" aria-hidden="true"><use href="#i-tag"/></svg>Bạn tiết kiệm&nbsp;<b data-save-amt>350.000đ</b>&nbsp;khi mua sản phẩm này</p>
+        </div>
+      </div>
+
+      <!-- ====== CỘT TRÁI: ảnh ====== -->
       <div class="pdp-left">
         <section class="gallery" id="hinh-anh" aria-roledescription="carousel" aria-label="Hình ảnh sản phẩm">
           <div class="g-main">
@@ -1063,44 +1088,10 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
             <button class="g-more" type="button" aria-label="Ảnh tiếp theo"><svg class="ico ico-16" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
           </div>
         </section>
-
-        <section class="commit" aria-labelledby="commit-h">
-          <h2 id="commit-h">Cam kết sản phẩm</h2>
-          <ul>
-            <li><svg class="ico" aria-hidden="true"><use href="#i-seal"/></svg>Sản phẩm chính hãng 100%
-              <span class="tip"><button class="tip-btn" type="button" aria-label="Chi tiết: Sản phẩm chính hãng 100%"><svg class="ico ico-14" aria-hidden="true"><use href="#i-info"/></svg></button><span class="tip-bubble" role="tooltip">Cam kết hàng chính hãng Việt Mỹ, nguồn gốc rõ ràng, đạt tiêu chuẩn chất lượng.</span></span></li>
-            <li><svg class="ico" aria-hidden="true"><use href="#i-safety"/></svg>An toàn tuyệt đối cho bé yêu
-              <span class="tip"><button class="tip-btn" type="button" aria-label="Chi tiết: An toàn tuyệt đối cho bé yêu"><svg class="ico ico-14" aria-hidden="true"><use href="#i-info"/></svg></button><span class="tip-bubble" role="tooltip">Vật liệu và hoàn thiện an toàn cho trẻ, phù hợp tiêu chuẩn mầm non.</span></span></li>
-            <li><svg class="ico" aria-hidden="true"><use href="#i-price"/></svg>Giá tốt nhất thị trường
-              <span class="tip"><button class="tip-btn" type="button" aria-label="Chi tiết: Giá tốt nhất thị trường"><svg class="ico ico-14" aria-hidden="true"><use href="#i-info"/></svg></button><span class="tip-bubble" role="tooltip">Cam kết mức giá cạnh tranh; hỗ trợ báo giá dự án và số lượng lớn.</span></span></li>
-            <li><svg class="ico" aria-hidden="true"><use href="#i-bill"/></svg>Hóa đơn, chứng từ đầy đủ
-              <span class="tip"><button class="tip-btn" type="button" aria-label="Chi tiết: Hóa đơn, chứng từ đầy đủ"><svg class="ico ico-14" aria-hidden="true"><use href="#i-info"/></svg></button><span class="tip-bubble" role="tooltip">Xuất hóa đơn VAT và chứng từ đầy đủ theo yêu cầu khách hàng.</span></span></li>
-          </ul>
-        </section>
-
-        <nav class="ptabs" aria-label="Thông tin sản phẩm">
-          <a href="#thong-so" class="is-active">Thông Số</a><a href="#mo-ta">Mô Tả</a><a href="#cau-hoi">Câu Hỏi</a><a href="#danh-gia">Đánh Giá</a>
-        </nav>
       </div>
 
-      <!-- ====== CỘT GIỮA: tên, giá, tùy chọn, nút mua ====== -->
-      <div class="summary" id="gia">
-        <h1 class="p-title">Vòng xoay vận động mầm non VM-6311</h1>
-        <div class="p-meta">
-          <span class="p-rating"><span class="stars" style="--p:92%" role="img" aria-label="4,6 trên 5 sao"></span><b>4.6</b><span class="muted">(32)</span></span>
-          <span class="vbar" aria-hidden="true"></span>
-          <span class="muted">Đã bán 1.2k</span>
-          <span class="stock">Còn hàng</span>
-        </div>
-        <div class="p-price">
-          <div class="price-row">
-            <span class="price-now" data-price-now>4.200.000đ</span>
-            <s class="price-old" data-price-old><span class="sr-only">Giá gốc </span>4.550.000đ</s>
-            <span class="disc" data-disc>-8%</span>
-          </div>
-          <p class="save" data-save><svg class="ico ico-16" aria-hidden="true"><use href="#i-tag"/></svg>Bạn tiết kiệm&nbsp;<b data-save-amt>350.000đ</b>&nbsp;khi mua sản phẩm này</p>
-        </div>
-
+      <!-- ====== CỘT GIỮA (tiếp): mô tả, tùy chọn, nút mua ====== -->
+      <div class="summary">
         <section class="specbox" aria-labelledby="specbox-h">
           <h2 id="specbox-h">Mô tả</h2>
           <!-- CHANGE v6 #1 — mô tả ngắn: ghép từ đúng các ý có sẵn trong Figma (đoạn mở "Mô tả sản phẩm" + bảng thông số), không thêm số liệu mới -->
@@ -1148,6 +1139,27 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
           <button class="btn btn-zalo" type="button" data-act="zalo" aria-label="Chat Zalo"><img class="zalo-mark" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIuMDAxOSIgaGVpZ2h0PSIyMi4wMDE5IiB2aWV3Qm94PSIwIDAgMjIuMDAxOSAyMi4wMDE5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZyBpZD0iTGVhZGluZyBJY29uIj4KPHBhdGggaWQ9IlZlY3RvciIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik05Ljk4NDk4IDAuMDczMjk2MkgxMS45MzUxQzE0LjYxMzQgMC4wNzMyOTYyIDE2LjE3ODUgMC40NjY2NzEgMTcuNTY3OSAxLjIxMTU3QzE4Ljk1NzIgMS45NTY0NyAyMC4wNTM2IDMuMDQ0NTMgMjAuNzkwMSA0LjQzMzkxQzIxLjUzNSA1LjgyMzI3IDIxLjkyODQgNy4zODgzOSAyMS45Mjg0IDEwLjA2NjdWMTIuMDA4NEMyMS45Mjg0IDE0LjY4NjcgMjEuNTM1IDE2LjI1MTggMjAuNzkwMSAxNy42NDEyQzIwLjA0NTIgMTkuMDMwNiAxOC45NTcyIDIwLjEyNyAxNy41Njc5IDIwLjg2MzVDMTYuMTc4NSAyMS42MDg0IDE0LjYxMzQgMjIuMDAxOCAxMS45MzUxIDIyLjAwMThIOS45OTMzM0M3LjMxNTA1IDIyLjAwMTggNS43NDk5MyAyMS42MDg0IDQuMzYwNTcgMjAuODYzNUMyLjk3MTIyIDIwLjExODYgMS44NzQ4IDE5LjAzMDYgMS4xMzgyNyAxNy42NDEyQzAuMzkzMzcgMTYuMjUxOCAwIDE0LjY4NjcgMCAxMi4wMDg0VjEwLjA2NjdDMCA3LjM4ODM5IDAuMzkzMzcgNS44MjMyNyAxLjEzODI3IDQuNDMzOTFDMS44ODMxNyAzLjA0NDUzIDIuOTcxMjIgMS45NDgxIDQuMzYwNTcgMS4yMTE1N0M1Ljc0MTU4IDAuNDY2NjcxIDcuMzE1MDUgMC4wNzMyOTYyIDkuOTg0OTggMC4wNzMyOTYyWiIgZmlsbD0iIzAwNjhGRiIvPgo8cGF0aCBpZD0iVmVjdG9yXzIiIG9wYWNpdHk9IjAuMTIiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjEuOTI4MyAxMS42ODgxVjEyLjAwODZDMjEuOTI4MyAxNC42ODY4IDIxLjUzNSAxNi4yNTIgMjAuNzkwMSAxNy42NDEzQzIwLjA0NTIgMTkuMDMwNyAxOC45NTcxIDIwLjEyNzEgMTcuNTY3NyAyMC44NjM3QzE2LjE3ODQgMjEuNjA4NiAxNC42MTMyIDIyLjAwMTkgMTEuOTM1IDIyLjAwMTlIOS45OTMyNEM3LjgwMTcxIDIyLjAwMTkgNi4zNTU0OSAyMS43Mzg1IDUuMTQxMDEgMjEuMjM0N0wzLjEzODggMTkuMTcyOUwyMS45MjgzIDExLjY4ODFaIiBmaWxsPSIjMDAxQTMzIi8+CjxwYXRoIGlkPSJWZWN0b3JfMyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zLjM2MTE0IDE5LjI0NDdDNC4zODY3IDE5LjM1ODEgNS42Njg5MSAxOS4wNjU2IDYuNTc5MzMgMTguNjIzNkMxMC41MzI3IDIwLjgwODcgMTYuNzEyNCAyMC43MDQ0IDIwLjQ1MzEgMTguMzEwNUMyMC41OTgyIDE4LjA5MjggMjAuNzMzNyAxNy44NjY1IDIwLjg1OTUgMTcuNjMxOUMyMS42MDcxIDE2LjIzNzUgMjIuMDAxOSAxNC42NjY3IDIyLjAwMTkgMTEuOTc4NlYxMC4wMjk4QzIyLjAwMTkgNy4zNDE3MiAyMS42MDcxIDUuNzcwOSAyMC44NTk1IDQuMzc2NDhDMjAuMTIwMyAyLjk4MjA2IDE5LjAxOTkgMS44OTAwNCAxNy42MjU1IDEuMTQyNDJDMTYuMjMxIDAuMzk0ODA3IDE0LjY2MDIgMCAxMS45NzIyIDBIMTAuMDE1QzcuNzI1NTYgMCA2LjIzOTM3IDAuMjg4MTkyIDQuOTkwNjggMC44MzgzOEM0LjkyMjQyIDAuODk5NTAxIDQuODU1NDUgMC45NjE2NjkgNC43ODk4OCAxLjAyNDg4QzEuMTI2NDEgNC41NTY0MiAwLjg0NzkzMSAxMi4yMTE2IDMuOTU0NDMgMTYuMzcwMUMzLjk1Nzg5IDE2LjM3NjIgMy45NjE3MyAxNi4zODI0IDMuOTY1OTUgMTYuMzg4N0M0LjQ0NDc2IDE3LjA5NDMgMy45ODI3NSAxOC4zMjkxIDMuMjYwMzQgMTkuMDUxNUMzLjE0MjczIDE5LjE2MDcgMy4xODQ3MyAxOS4yMjc5IDMuMzYxMTQgMTkuMjQ0N1oiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGlkPSJWZWN0b3JfNCIgZD0iTTkuMDA1MzggNy41MDU1Mkg0LjcxMTc4VjguNDI2MThINy42OTEzNEw0Ljc1MzU5IDEyLjA2N0M0LjY2MTU0IDEyLjIwMDkgNC41OTQ2MSAxMi4zMjY0IDQuNTk0NjEgMTIuNjExVjEyLjg0NTNIOC42NDU0N0M4Ljg0NjM1IDEyLjg0NTMgOS4wMTM3NyAxMi42NzggOS4wMTM3NyAxMi40NzcxVjExLjk4MzNINS44ODM1Mkw4LjY0NTQ3IDguNTE4MjNDOC42ODczMiA4LjQ2ODA0IDguNzYyNjQgOC4zNzU5OCA4Ljc5NjE1IDguMzM0MTNMOC44MTI4OCA4LjMwOTAxQzguOTcxOTEgOC4wNzQ2NiA5LjAwNTM4IDcuODczNzcgOS4wMDUzOCA3LjYzMTA4VjcuNTA1NTJaIiBmaWxsPSIjMDA2OEZGIi8+CjxwYXRoIGlkPSJWZWN0b3JfNSIgZD0iTTE0LjQ3MDUgMTIuODQ1M0gxNS4wODE1VjcuNTA1NTJIMTQuMTYwOFYxMi41MzU3QzE0LjE2MDggMTIuNzAzMSAxNC4yOTQ3IDEyLjg0NTMgMTQuNDcwNSAxMi44NDUzWiIgZmlsbD0iIzAwNjhGRiIvPgo8cGF0aCBpZD0iVmVjdG9yXzYiIGQ9Ik0xMS4zMjM2IDguNjk0MjJDMTAuMTY4NiA4LjY5NDIyIDkuMjMxMjEgOS42MzE2MSA5LjIzMTIxIDEwLjc4NjZDOS4yMzEyMSAxMS45NDE2IDEwLjE2ODYgMTIuODc5IDExLjMyMzYgMTIuODc5QzEyLjQ3ODYgMTIuODc5IDEzLjQxNiAxMS45NDE2IDEzLjQxNiAxMC43ODY2QzEzLjQyNDQgOS42MzE2MSAxMi40ODcgOC42OTQyMiAxMS4zMjM2IDguNjk0MjJaTTExLjMyMzYgMTIuMDE3QzEwLjY0NTcgMTIuMDE3IDEwLjA5MzMgMTEuNDY0NSAxMC4wOTMzIDEwLjc4NjZDMTAuMDkzMyAxMC4xMDg3IDEwLjY0NTcgOS41NTYyOSAxMS4zMjM2IDkuNTU2MjlDMTIuMDAxNSA5LjU1NjI5IDEyLjU1MzkgMTAuMTA4NyAxMi41NTM5IDEwLjc4NjZDMTIuNTUzOSAxMS40NjQ1IDEyLjAwOTkgMTIuMDE3IDExLjMyMzYgMTIuMDE3WiIgZmlsbD0iIzAwNjhGRiIvPgo8cGF0aCBpZD0iVmVjdG9yXzciIGQ9Ik0xNy44MDE2IDguNjYwNTdDMTYuNjM4MiA4LjY2MDU3IDE1LjY5MjUgOS42MDYzNiAxNS42OTI1IDEwLjc2OTdDMTUuNjkyNSAxMS45MzMxIDE2LjYzODIgMTIuODc4OSAxNy44MDE2IDEyLjg3ODlDMTguOTY1IDEyLjg3ODkgMTkuOTEwOCAxMS45MzMxIDE5LjkxMDggMTAuNzY5N0MxOS45MTA4IDkuNjA2MzYgMTguOTY1IDguNjYwNTcgMTcuODAxNiA4LjY2MDU3Wk0xNy44MDE2IDEyLjAxNjhDMTcuMTE1MyAxMi4wMTY4IDE2LjU2MjkgMTEuNDY0NCAxNi41NjI5IDEwLjc3ODFDMTYuNTYyOSAxMC4wOTE4IDE3LjExNTMgOS41MzkzOCAxNy44MDE2IDkuNTM5MzhDMTguNDg3OSA5LjUzOTM4IDE5LjA0MDMgMTAuMDkxOCAxOS4wNDAzIDEwLjc3ODFDMTkuMDQwMyAxMS40NjQ0IDE4LjQ4NzkgMTIuMDE2OCAxNy44MDE2IDEyLjAxNjhaIiBmaWxsPSIjMDA2OEZGIi8+CjxwYXRoIGlkPSJWZWN0b3JfOCIgZD0iTTEyLjkzMTYgMTIuODQ1MkgxMy40MjU1VjguODExMDRIMTIuNTYzNFYxMi40ODUzQzEyLjU2MzQgMTIuNjc3OCAxMi43MzA4IDEyLjg0NTIgMTIuOTMxNiAxMi44NDUyWiIgZmlsbD0iIzAwNjhGRiIvPgo8L2c+Cjwvc3ZnPgo=" width="22" height="22" alt=""><span class="lbl">Chat Zalo</span></button>
           <button class="btn btn-navy" type="button" data-act="quote" aria-pressed="false"><svg class="ico ico-18" aria-hidden="true"><use href="#i-quote"/></svg><span data-quote-label>Thêm Vào Báo Giá</span></button>
         </div>
+      </div>
+
+      <!-- ====== CỘT TRÁI (tiếp): cam kết + tab viên thuốc — CHANGE v8: đứng sau phần tóm tắt trong DOM để ~400 ký tự sau H1 tới thẳng giá + mô tả ngắn; desktop vẫn đặt ở cột trái nhờ grid-row ====== -->
+      <div class="pdp-left">
+        <section class="commit" aria-labelledby="commit-h">
+          <h2 id="commit-h">Cam kết sản phẩm</h2>
+          <ul>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-seal"/></svg>Sản phẩm chính hãng 100%
+              <span class="tip"><button class="tip-btn" type="button" aria-label="Chi tiết: Sản phẩm chính hãng 100%"><svg class="ico ico-14" aria-hidden="true"><use href="#i-info"/></svg></button><span class="tip-bubble" role="tooltip">Cam kết hàng chính hãng Việt Mỹ, nguồn gốc rõ ràng, đạt tiêu chuẩn chất lượng.</span></span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-safety"/></svg>An toàn tuyệt đối cho bé yêu
+              <span class="tip"><button class="tip-btn" type="button" aria-label="Chi tiết: An toàn tuyệt đối cho bé yêu"><svg class="ico ico-14" aria-hidden="true"><use href="#i-info"/></svg></button><span class="tip-bubble" role="tooltip">Vật liệu và hoàn thiện an toàn cho trẻ, phù hợp tiêu chuẩn mầm non.</span></span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-price"/></svg>Giá tốt nhất thị trường
+              <span class="tip"><button class="tip-btn" type="button" aria-label="Chi tiết: Giá tốt nhất thị trường"><svg class="ico ico-14" aria-hidden="true"><use href="#i-info"/></svg></button><span class="tip-bubble" role="tooltip">Cam kết mức giá cạnh tranh; hỗ trợ báo giá dự án và số lượng lớn.</span></span></li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-bill"/></svg>Hóa đơn, chứng từ đầy đủ
+              <span class="tip"><button class="tip-btn" type="button" aria-label="Chi tiết: Hóa đơn, chứng từ đầy đủ"><svg class="ico ico-14" aria-hidden="true"><use href="#i-info"/></svg></button><span class="tip-bubble" role="tooltip">Xuất hóa đơn VAT và chứng từ đầy đủ theo yêu cầu khách hàng.</span></span></li>
+          </ul>
+        </section>
+
+        <nav class="ptabs" aria-label="Thông tin sản phẩm">
+          <a href="#thong-so" class="is-active">Thông Số</a><a href="#mo-ta">Mô Tả</a><a href="#cau-hoi">Câu Hỏi</a><a href="#danh-gia">Đánh Giá</a>
+        </nav>
       </div>
 
       <!-- ====== CỘT PHẢI: chính sách + tư vấn viên ====== -->
