@@ -280,6 +280,8 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
 
 .specbox { padding: 12px; border-radius: 16px; background: var(--brand-cream); }
 .specbox h2 { margin: 0 0 8px; font-size: 14px; font-weight: 700; line-height: 1.4; }
+/* CHANGE v6 #1 — mô tả ngắn (trường excerpt của Woo) đứng đầu hộp "Mô tả", trước các dòng thuộc tính */
+.specbox .spec-lead { margin: 0 0 10px; font-size: 14px; font-weight: 400; line-height: 1.6; color: var(--brand-ink); }
 .spec-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; }
 .spec-grid ul { padding-left: 18px; }
 .spec-grid li { font-size: 12px; line-height: 1.66; font-weight: 500; }
@@ -731,7 +733,8 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
   .f-col h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
   .f-bottom { margin-top: 0; }
 
-  .sticky { padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); transform: none; }
+  /* CHANGE v6 #2 — bỏ transform:none: mobile dùng chung luật .is-on như desktop (chỉ hiện khi nút mua chính đã cuộn qua) để thanh không che H1 lúc tải */
+  .sticky { padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); }
   .sticky .container { flex-direction: column; align-items: stretch; gap: 10px; }
   .st-price { display: flex; justify-content: space-between; width: 100%; gap: 8px; }
   .st-label { display: block; flex: 1 1 auto; font-size: 14px; font-weight: 700; }
@@ -1095,6 +1098,8 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
 
         <section class="specbox" aria-labelledby="specbox-h">
           <h2 id="specbox-h">Mô tả</h2>
+          <!-- CHANGE v6 #1 — mô tả ngắn: ghép từ đúng các ý có sẵn trong Figma (đoạn mở "Mô tả sản phẩm" + bảng thông số), không thêm số liệu mới -->
+          <p class="spec-lead">Bàn mầm non gỗ tự nhiên ABC là bàn học nhóm cho trẻ 2–6 tuổi, kích thước 120 × 60 × 50 cm, đủ chỗ cho 4–6 bé ngồi học và hoạt động nhóm. Bàn làm từ gỗ tự nhiên nhập khẩu, phủ sơn gốc nước đạt EN71-3, góc bo tròn 360°, phù hợp lớp mầm non, nhà trẻ, trung tâm giáo dục sớm và gia đình.</p>
           <div class="spec-grid">
             <ul>
               <li><b>Mã sản phẩm:</b> VM-CT0015</li>
@@ -1713,9 +1718,9 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
   mqMobile.addEventListener('change', function () { if (!mqMobile.matches) Object.keys(POPS).forEach(function (k) { if (isPopOpen(k)) setPop(k, false); }); });
   sheetScrim.addEventListener('click', function () { setSheet(false); });
 
-  /* ---------- Thanh dính đáy: desktop hiện khi nút mua chính đã cuộn qua ---------- */
+  /* ---------- Thanh dính đáy: hiện khi nút mua chính đã cuộn qua (desktop + mobile — CHANGE v6 #2) ---------- */
   var sticky = $('[data-sticky]');
-  function syncStickyH() { document.body.style.setProperty('--sticky-h', sticky.classList.contains('is-on') || mqMobile.matches ? sticky.offsetHeight + 'px' : '0px'); }
+  function syncStickyH() { document.body.style.setProperty('--sticky-h', sticky.classList.contains('is-on') ? sticky.offsetHeight + 'px' : '0px'); }
   new IntersectionObserver(function (en) {
     var past = !en[0].isIntersecting && en[0].boundingClientRect.top < 0;
     sticky.classList.toggle('is-on', past); syncStickyH();
