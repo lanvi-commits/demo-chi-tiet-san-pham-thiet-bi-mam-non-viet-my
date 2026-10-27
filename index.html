@@ -1849,15 +1849,24 @@ h1, h2, h3, p, ul, ol, figure { margin: 0; }
   function activate(id) {
     mLinks.forEach(function (a) {
       var on = a.getAttribute('href') === '#' + id; a.classList.toggle('is-active', on);
-      if (on) { var ul = a.closest('ul'); ul.scrollTo({ left: a.parentNode.offsetLeft - 16 }); }
+      if (on) {   /* chỉ cuộn dải tab khi tab đang sáng bị khuất — tránh đẩy tab đầu ra khỏi màn hình */
+        var ul = a.closest('ul'), li = a.parentNode;
+        if (li.offsetLeft < ul.scrollLeft + 16 || li.offsetLeft + li.offsetWidth > ul.scrollLeft + ul.clientWidth - 16) ul.scrollTo({ left: li.offsetLeft - 16 });
+      }
     });
     if (pLinks.some(function (a) { return a.getAttribute('href') === '#' + id; }))
       pLinks.forEach(function (a) { a.classList.toggle('is-active', a.getAttribute('href') === '#' + id); });
   }
+  /* Đầu trang: sáng tab đầu (khối đang nằm trên cùng), dù vạch quét 40–45% màn hình đã chạm khối sau */
+  var firstId = mLinks[0].getAttribute('href').slice(1);
+  function atTop() { if (window.scrollY < 40) activate(firstId); }
   var spy = new IntersectionObserver(function (en) {
     en.forEach(function (x) { if (x.isIntersecting) activate(x.target.id); });
+    atTop();
   }, { rootMargin: '-40% 0px -55% 0px' });
   spyIds.forEach(function (id) { var el = document.getElementById(id); if (el) spy.observe(el); });
+  var topRaf = 0;
+  window.addEventListener('scroll', function () { if (!topRaf) topRaf = requestAnimationFrame(function () { topRaf = 0; atTop(); }); }, { passive: true });
 
   render();
 })();
